@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const sequelize = require('../db');
 const { validateToken } = require('../services/jwt.services');
+const QueryTypes = require('sequelize/types/lib/query-types');
 
 router.get('/', validateToken, async (req, res) => {
 	try {
 		const { is_admin, is_disabled } = req.token_info;
 		if (is_disabled) {
-			res.status(401).json('El usuario se encuentra desabilitado');
+			res.status(401).json('Tu cuenta se encuentra desabilitada.');
 		}
 
 		if (!is_admin) {
@@ -48,18 +49,33 @@ router.post('/', async (req, res) => {
 	}
 });
 
-router.patch('/:id', (req, res) => {
-	sequelize
-		.query(
-			`UPDATE users SET is_admin = ${req.body.is_admin}, is_disabled = ${req.body.is_disabled} WHERE user_id = ${req.params.id}`
-		)
-		.then(() => {
+router.patch('/:id', validateToken, async (req, res) => {
+	try {
+		const { is_admin, is_disabled } = req.token_info;
+
+		if (is_disabled) {
+			res.send(401).json('Tu cuenta se encuentra desabilitada.');
+		}
+
+		if (!is_admin) {
+			res.send(401).json('No tenes permisos de administrador para modificar usuarios.');
+		} else {
+			const patch = await sequelize.query(
+				`UPDATE users SET is_admin = ${req.body.is_admin}, is_disabled = ${req.body.is_disabled} WHERE user_id = ${req.params.id}`,
+				{
+					replacements: {
+						is_admin,
+						is_disabled,
+					},
+				}
+			);
+
 			res.status(201).send(`Se ha modificado con exito el usuario "${req.params.id}"`);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).send('Algo salio mal, no se pudo modificar el usuario');
-		});
+		}
+	} catch (error) {
+		console.log(err);
+		res.status(500).send('Algo salio mal, no se pudo modificar el usuario');
+	}
 });
 
 module.exports = router;
