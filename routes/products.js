@@ -57,29 +57,37 @@ router.post('/', validateToken, async (req, res) => {
 	}
 });
 
-router.patch('/:id', (req, res) => {
-	if (!req.body) {
-		res.status(400).send('No se definieron los parametros a modificar');
+router.patch('/:id', validateToken, (req, res) => {
+	try {
+		if (!req.body) {
+			res.status(400).json('No se definieron los parametros a modificar');
+		}
+
+		const { is_admin, is_disabled } = req.token_info;
+
+		if (is_admin && !is_disabled) {
+			const { image_url, title, price, prod_description } = req.body;
+
+			const changeProduct = sequelize.query(
+				`UPDATE products SET image_url = :image_url, title = :title, price = :price, prod_description = :prod_description WHERE product_id = ${req.params.id}`,
+				{
+					replacements: {
+						image_url,
+						title,
+						price,
+						prod_description,
+					},
+				}
+			);
+
+			res.status(201).json(`Se ha modificado con exito el producto ${req.params.id}`);
+		} else {
+			res.status(403).json('Tu usuario se encuentra desabilitado o no tiene permisos para modificar productos.');
+		}
+	} catch (err) {
+		console.log(err);
+		res.status(500).json('Algo salio mal, no se pudo modificar el producto');
 	}
-	sequelize
-		.query(
-			`UPDATE products SET image_url = :image_url, title = :title, price = :price, prod_description = :prod_description WHERE product_id = ${req.params.id}`,
-			{
-				replacements: {
-					image_url: req.body.image_url,
-					title: req.body.title,
-					price: req.body.price,
-					prod_description: req.body.prod_description,
-				},
-			}
-		)
-		.then(() => {
-			res.status(201).send(`Se ha modificado con exito el producto ${req.params.id}`);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).send('Algo salio mal, no se pudo modificar el producto');
-		});
 });
 
 module.exports = router;
