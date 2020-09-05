@@ -11,9 +11,10 @@ async function validateToken(req, res, next) {
 
 	try {
 		const validation = jwt.verify(token, process.env.TOKEN_SECRET);
+		req.token_info = validation.info;
 		next();
 	} catch (err) {
-		res.status(401).send('Usuario sin autorización o token expirado');
+		res.status(401).send('Token invalido o expirado');
 	}
 }
 

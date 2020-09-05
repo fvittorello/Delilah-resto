@@ -1,12 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../db');
-const { generateToken, validateToken } = require('../services/jwt.services');
+const { validateToken } = require('../services/jwt.services');
 
-router.get('/', (req, res) => {
-	sequelize.query('SELECT * FROM users', { type: sequelize.QueryTypes.SELECT }).then((resultados) => {
-		res.send(resultados);
-	});
+router.get('/', validateToken, async (req, res) => {
+	try {
+		const { is_admin, is_disabled } = req.token_info;
+		if (is_disabled) {
+			res.status(401).json('El usuario se encuentra desabilitado');
+		}
+
+		if (!is_admin) {
+			res.status(401).json('El usuario no tiene permisos de administrador.');
+		} else {
+			const users = await sequelize.query('SELECT * FROM users', { type: sequelize.QueryTypes.SELECT });
+
+			res.status(200).json(users);
+		}
+	} catch (err) {
+		console.log(err);
+		res.status(401).json('Hubo un problema al intentar el pedido');
+	}
 });
 
 router.post('/', (req, res) => {
