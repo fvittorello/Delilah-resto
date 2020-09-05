@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const sequelize = require('../db');
 const { validateToken } = require('../services/jwt.services');
-const QueryTypes = require('sequelize/types/lib/query-types');
 
 router.get('/', validateToken, async (req, res) => {
 	try {
@@ -54,11 +53,11 @@ router.patch('/:id', validateToken, async (req, res) => {
 		const { is_admin, is_disabled } = req.token_info;
 
 		if (is_disabled) {
-			res.send(401).json('Tu cuenta se encuentra desabilitada.');
+			res.status(401).json('Tu cuenta se encuentra desabilitada.');
 		}
 
 		if (!is_admin) {
-			res.send(401).json('No tenes permisos de administrador para modificar usuarios.');
+			res.status(401).json('No tenes permisos de administrador para modificar usuarios.');
 		} else {
 			const patch = await sequelize.query(
 				`UPDATE users SET is_admin = ${req.body.is_admin}, is_disabled = ${req.body.is_disabled} WHERE user_id = ${req.params.id}`,
@@ -70,7 +69,7 @@ router.patch('/:id', validateToken, async (req, res) => {
 				}
 			);
 
-			res.status(201).send(`Se ha modificado con exito el usuario "${req.params.id}"`);
+			res.status(201).send(`Se ha modificado con exito el usuario con el id"${req.params.id}"`);
 		}
 	} catch (error) {
 		console.log(err);
