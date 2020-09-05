@@ -1,34 +1,60 @@
 const express = require('express');
 const router = express.Router();
-
 const sequelize = require('../db');
+const { validateToken } = require('../services/jwt.services');
 
-router.get('/', (req, res) => {
-	sequelize.query('SELECT * FROM products', { type: sequelize.QueryTypes.SELECT }).then((resultados) => {
-		res.send(resultados);
-	});
+router.get('/', validateToken, async (req, res) => {
+	try {
+		const { is_admin, is_disabled } = req.token_info;
+
+		if (is_admin && !is_disabled) {
+			const products = await sequelize.query('SELECT * FROM products', { type: sequelize.QueryTypes.SELECT });
+
+			res.status(201).json(products);
+		} else {
+			const products = await sequelize.query('SELECT * FROM products WHERE is_disabled = "false"', {
+				type: sequelize.QueryTypes.SELECT,
+			});
+
+			res.status(201).json(products);
+		}
+	} catch (err) {
+		console.log(err);
+		res.status(500).json('Algo salio mal y no se pudo realizar el request de productos');
+	}
 });
 
-router.post('/', (req, res) => {
-	sequelize
-		.query(
-			'INSERT INTO products (image_url, title, price, prod_description) VALUES (:image_url, :title, :price, :prod_description)',
-			{
-				replacements: {
-					image_url: req.body.image_url,
-					title: req.body.title,
-					price: req.body.price,
-					prod_description: req.body.prod_description,
-				},
-			}
-		)
-		.then(() => {
-			res.status(201).send(`Se ha creado con exito el producto ${req.body.title}`);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).send('Algo salio mal, no se pudo crear el producto');
-		});
+router.post('/', validateToken, async (req, res) => {
+	try {
+		const { is_admin, is_disabled } = req.token_info;
+
+		if (is_admin && !is_disabled) {
+			const { image_url, title, price, prod_description } = req.body;
+
+			const newProduct = sequelize.query(
+				'INSERT INTO products (image_url, title, price, prod_description) VALUES (:image_url, :title, :price, :prod_description)',
+				{
+					replacements: {
+						image_url,
+						title,
+						price,
+						prod_description,
+					},
+				}
+			);
+
+			res.status(201).json(`Se ha creado con exito el producto ${title}`);
+		} else {
+			res
+				.status(403)
+				.json(
+					'Tu usuario no puede crear nuevos productos debido a que no es administrador o se encuentra desabilitado'
+				);
+		}
+	} catch (err) {
+		console.log(err);
+		res.status(500).json('Algo salio mal, no se pudo crear el producto');
+	}
 });
 
 router.patch('/:id', (req, res) => {
