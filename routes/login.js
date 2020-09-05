@@ -19,6 +19,7 @@ router.post('/', async (req, res) => {
 			}
 		);
 
+		console.log(userData[0]);
 		const token_data = await generateToken(userData[0]);
 		res.status(201).send({ token_data });
 	} catch (err) {
