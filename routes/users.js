@@ -23,28 +23,29 @@ router.get('/', validateToken, async (req, res) => {
 	}
 });
 
-router.post('/', (req, res) => {
-	sequelize
-		.query(
+router.post('/', async (req, res) => {
+	const { username, fullname, address, email, password, phone } = req.body;
+
+	try {
+		const postUser = await sequelize.query(
 			'INSERT INTO users (username, fullname, address, email, password, phone) VALUES (:username, :fullname, :address, :email, :password, :phone)',
 			{
 				replacements: {
-					username: req.body.username,
-					fullname: req.body.fullname,
-					address: req.body.address,
-					email: req.body.email,
-					password: req.body.password,
-					phone: req.body.phone,
+					username,
+					fullname,
+					address,
+					email,
+					password,
+					phone,
 				},
 			}
-		)
-		.then(() => {
-			res.status(201).send(`Se ha creado con exito el usuario "${req.body.username}"`);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).send('Algo salio mal, no se pudo crear el usuario');
-		});
+		);
+
+		res.status(201).send(`Se ha creado con exito el usuario "${username}"`);
+	} catch (err) {
+		console.log(err);
+		res.status(500).send('Algo salio mal, no se pudo crear el usuario');
+	}
 });
 
 router.patch('/:id', (req, res) => {
