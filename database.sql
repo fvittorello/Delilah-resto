@@ -39,7 +39,6 @@ CREATE TABLE orders(
     payment_type INT NOT NULL,
     date DATETIME NOT NULL,
     order_description VARCHAR(500),
-    total FLOAT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
     PRIMARY KEY (order_id),
@@ -53,6 +52,7 @@ CREATE TABLE orders_has_products(
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     product_amount INT NOT NULL,
+    unit_price FLOAT UNSIGNED NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
     PRIMARY KEY (orders_has_products_id),
@@ -80,7 +80,7 @@ INSERT INTO products (image_url, title, price, prod_description, is_disabled, cr
 ('https://via.placeholder.com/500', 'Hamburguesa con bacon', 300, 'Hamburguesa con panceta, carne de 200g, queso chedar y cebolla caramelizada', false, '2020-07-11 20:04:00');
 
 INSERT INTO order_status (status) VALUES
-    ('nuevo'), ('confirmado'), ('preparando'), ('enviando'), ('entregado')
+    ('nuevo'), ('confirmado'), ('preparando'), ('enviando'), ('entregado'), ('cancelado')
 ;
 
 INSERT INTO payment_method (method) VALUES 
