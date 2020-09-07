@@ -1,4 +1,4 @@
-const sequelize = require('../db');
+const sequelize = require('../db/db');
 
 async function validateProductId(req, res, next) {
 	try {

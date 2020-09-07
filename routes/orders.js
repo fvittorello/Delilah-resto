@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const sequelize = require('../db');
+const sequelize = require('../db/db');
 const { validateToken } = require('../services/jwt.services');
 const { validateOrderId, validateProductStatus } = require('../services/db.services');
 
