@@ -31,27 +31,3 @@ app.use((err, req, res, next) => {
 	console.error(err);
 	res.status(500).send('Something broke big time!', err);
 });
-
-//	Endpoints
-/*
-	- Crear un nuevo usuario
-
-	- Autenticar usuario con jwt (Buscar variables de entorno y como almacenarlas en Postman)
-
-	- Dar de baja un usuario (flag only) [ACTUALIZAR USUARIO - solo admin]
-
-	- Traer todos los pedidos ? [solo propios si no es admin || todos si es admin]
-
-	- Traer un pedido y actualizar su estado (nuevo, confirmado, preparando, enviando, entregado)
-
-	- Traer un usuario y cambiarle los permisos [ACTUALIZAR USUARIO - solo admin]
-
-	- Calcular monto total [Middleware]
-
-	- Dar de alta un pedido (asignar usuario, asignar productos y cantidades, estado default) 
-
-	- Actualizar stock de productos [Middleware]
-
-	- Dar de baja un pedido (flag only) [ACTUALIZAR PEDIDO - solo admin ? ]
-
-*/
