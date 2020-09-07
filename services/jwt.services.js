@@ -14,7 +14,7 @@ async function validateToken(req, res, next) {
 		req.token_info = validation.info;
 		next();
 	} catch (err) {
-		res.status(401).send('Token invalido o expirado');
+		res.status(401).json('Token invalido o expirado');
 	}
 }
 
