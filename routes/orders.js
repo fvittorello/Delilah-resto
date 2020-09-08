@@ -9,7 +9,7 @@ router.get('/', validateToken, async (req, res) => {
 		const { user_id, is_admin, is_disabled } = req.token_info;
 
 		if (is_disabled) {
-			res.status(403).json('Tu cuenta fue desabilitada y no tiene acceso a los pedidos');
+			res.status(403).json({ message: 'Tu cuenta fue desabilitada y no tiene acceso a los pedidos' });
 		}
 
 		if (is_admin) {
@@ -34,7 +34,7 @@ router.get('/', validateToken, async (req, res) => {
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal y no se pudieron traer los pedidos');
+		res.status(500).json({ message: 'Algo salio mal y no se pudieron traer los pedidos' });
 	}
 });
 
@@ -43,7 +43,7 @@ router.get('/:id', validateToken, validateOrderId, async (req, res) => {
 		const { user_id, is_admin, is_disabled } = req.token_info;
 
 		if (is_disabled) {
-			res.status(403).json('Tu cuenta fue desabilitada y no tiene acceso a los pedidos');
+			res.status(403).json({ message: 'Tu cuenta fue desabilitada y no tiene acceso a los pedidos' });
 		}
 
 		if (is_admin) {
@@ -71,14 +71,14 @@ router.get('/:id', validateToken, validateOrderId, async (req, res) => {
 			);
 
 			if (!pedidos.length) {
-				res.status(404).json(`No se encontraron pedidos con el id = ${req.params.id}`);
+				res.status(404).json({ message: `No se encontraron pedidos con el id = ${req.params.id}` });
 			}
 
 			res.status(200).json(pedidos);
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal y no se pudieron traer los pedidos');
+		res.status(500).json({ message: 'Algo salio mal y no se pudieron traer los pedidos' });
 	}
 });
 
@@ -87,7 +87,7 @@ router.post('/', validateToken, validateProductStatus, async (req, res) => {
 		const { user_id, is_disabled } = req.token_info;
 
 		if (is_disabled) {
-			res.status(403).json('Tu cuenta se encuentra desabilitada y no puede hacer nuevos pedidos');
+			res.status(403).json({ message: 'Tu cuenta se encuentra desabilitada y no puede hacer nuevos pedidos' });
 		} else {
 			const { payment_method, products, order_description = null } = req.body;
 
@@ -125,11 +125,11 @@ router.post('/', validateToken, validateProductStatus, async (req, res) => {
 				);
 			});
 
-			res.status(201).json('El pedido se ingreso con exito!');
+			res.status(201).json({ message: `El pedido se ingreso con exito! el numero de seguimiento es #${newOrder[0]}` });
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal, no se pudo ingresar el pedido');
+		res.status(500).json({ message: 'Algo salio mal, no se pudo ingresar el pedido' });
 		next(err);
 	}
 });
@@ -140,7 +140,7 @@ router.put('/:id', validateToken, validateOrderId, async (req, res) => {
 
 		if (is_admin && !is_disabled) {
 			if (!req.body) {
-				res.status(400).json('No se definieron los parametros a modificar');
+				res.status(400).json({ message: 'No se definieron los parametros a modificar' });
 			}
 
 			const { status } = req.body;
@@ -153,15 +153,15 @@ router.put('/:id', validateToken, validateOrderId, async (req, res) => {
 				}
 			);
 
-			res.status(201).json(`Se ha modificado con exito el pedido ${req.params.id}`);
+			res.status(201).json({ message: `Se ha modificado con exito el pedido ${req.params.id}` });
 		} else {
-			res
-				.status(403)
-				.json('No tenes permisos de administrador o tu usuario se encuentra desabilitado para modificar pedidos');
+			res.status(403).json({
+				message: 'No tenes permisos de administrador o tu usuario se encuentra desabilitado para modificar pedidos',
+			});
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal, no se pudo modificar el pedido');
+		res.status(500).json({ message: 'Algo salio mal, no se pudo modificar el pedido' });
 	}
 });
 
@@ -172,13 +172,15 @@ router.delete('/:id', validateToken, validateOrderId, async (req, res) => {
 		if (is_admin && !is_disabled) {
 			const cancelOrder = await sequelize.query(`UPDATE orders SET status = 6 WHERE order_id = ${req.params.id}`);
 
-			res.status(201).json(`Se ha cancelado la orden con id = ${req.params.id}`);
+			res.status(201).json({ message: `Se ha cancelado la orden con id = ${req.params.id}` });
 		} else {
-			res.status(403).json('Tu usuario se encuentra desabilitado o no tiene permisos para modificar ordenes.');
+			res
+				.status(403)
+				.json({ message: 'Tu usuario se encuentra desabilitado o no tiene permisos para modificar ordenes.' });
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal, no se pudo cancelar la orden');
+		res.status(500).json({ message: 'Algo salio mal, no se pudo cancelar la orden' });
 	}
 });
 
