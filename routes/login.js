@@ -20,11 +20,16 @@ router.post('/', async (req, res) => {
 		);
 
 		console.log(userData[0]);
-		const token_data = await generateToken(userData[0]);
-		res.status(201).send({ token_data });
+
+		if (!userData.length) {
+			res.status(401).json({ message: 'El usuario o contraseña ingresados no son correctos.' });
+		} else {
+			const token_data = await generateToken(userData[0]);
+			res.status(201).json({ token_data });
+		}
 	} catch (err) {
 		console.log(err);
-		res.status(401).json('El usuario o contraseña ingresados no son correctos.');
+		res.status(401).json({ message: 'Algo salio mal y no se pudo finalizar el login' });
 	}
 });
 
