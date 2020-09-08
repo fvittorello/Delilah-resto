@@ -29,5 +29,5 @@ app.use(`/${apiVersion}/pedidos`, ordersRoute);
 //	Error Handler
 app.use((err, req, res, next) => {
 	console.error(err);
-	res.status(500).send('Something broke big time!', err);
+	res.status(500).json({ error: err });
 });
