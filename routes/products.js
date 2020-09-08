@@ -21,7 +21,7 @@ router.get('/', validateToken, async (req, res) => {
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal y no se pudo realizar el request de productos');
+		res.status(500).json({ message: 'Algo salio mal y no se pudo realizar el request de productos' });
 	}
 });
 
@@ -47,7 +47,7 @@ router.get('/:id', validateToken, validateProductId, async (req, res) => {
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal y no se pudo realizar el request de productos');
+		res.status(500).json({ message: 'Algo salio mal y no se pudo realizar el request de productos' });
 	}
 });
 
@@ -70,24 +70,23 @@ router.post('/', validateToken, async (req, res) => {
 				}
 			);
 
-			res.status(201).json(`Se ha creado con exito el producto ${title}`);
+			res.status(201).json({ message: `Se ha creado con exito el producto ${title}` });
 		} else {
-			res
-				.status(403)
-				.json(
-					'Tu usuario no puede crear nuevos productos debido a que no es administrador o se encuentra desabilitado'
-				);
+			res.status(403).json({
+				message:
+					'Tu usuario no puede crear nuevos productos debido a que no es administrador o se encuentra desabilitado',
+			});
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal, no se pudo crear el producto');
+		res.status(500).json({ message: 'Algo salio mal, no se pudo crear el producto' });
 	}
 });
 
 router.put('/:id', validateToken, (req, res) => {
 	try {
 		if (!req.body) {
-			res.status(400).json('No se definieron los parametros a modificar');
+			res.status(400).json({ message: 'No se definieron los parametros a modificar' });
 		}
 
 		const { is_admin, is_disabled } = req.token_info;
@@ -108,13 +107,15 @@ router.put('/:id', validateToken, (req, res) => {
 				}
 			);
 
-			res.status(201).json(`Se ha modificado con exito el producto ${req.params.id}`);
+			res.status(201).json({ message: `Se ha modificado con exito el producto ${req.params.id}` });
 		} else {
-			res.status(403).json('Tu usuario se encuentra desabilitado o no tiene permisos para modificar productos.');
+			res
+				.status(403)
+				.json({ message: 'Tu usuario se encuentra desabilitado o no tiene permisos para modificar productos.' });
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal, no se pudo modificar el producto');
+		res.status(500).json({ message: 'Algo salio mal, no se pudo modificar el producto' });
 	}
 });
 
@@ -127,13 +128,15 @@ router.delete('/:id', validateToken, validateProductId, async (req, res) => {
 				`UPDATE products SET is_disabled = true WHERE product_id = ${req.params.id}`
 			);
 
-			res.status(201).json(`Se ha desabilitado el producto con id = ${req.params.id}`);
+			res.status(201).json({ message: `Se ha desabilitado el producto con id = ${req.params.id}` });
 		} else {
-			res.status(403).json('Tu usuario se encuentra desabilitado o no tiene permisos para modificar productos.');
+			res
+				.status(403)
+				.json({ message: 'Tu usuario se encuentra desabilitado o no tiene permisos para modificar productos.' });
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).json('Algo salio mal, no se pudo dar de baja el producto');
+		res.status(500).json({ message: 'Algo salio mal, no se pudo dar de baja el producto' });
 	}
 });
 
