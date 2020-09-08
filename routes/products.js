@@ -39,9 +39,15 @@ router.get('/:id', validateToken, validateProductId, async (req, res) => {
 
 			res.status(201).json(products);
 		} else {
-			const products = await sequelize.query('SELECT * FROM products WHERE is_disabled = "false"', {
-				type: sequelize.QueryTypes.SELECT,
-			});
+			const products = await sequelize.query(
+				'SELECT * FROM products WHERE product_id = :product_id AND is_disabled = "false"',
+				{
+					replacements: {
+						product_id: req.params.id,
+					},
+					type: sequelize.QueryTypes.SELECT,
+				}
+			);
 
 			res.status(201).json(products);
 		}
