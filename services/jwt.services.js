@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 
 function generateToken(info) {
 	const token = jwt.sign({ info }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-	console.log(`token generado ${token}`);
 	return token;
 }
 
@@ -14,7 +13,7 @@ async function validateToken(req, res, next) {
 		req.token_info = validation.info;
 		next();
 	} catch (err) {
-		res.status(401).json('Token invalido o expirado');
+		res.status(401).json({ message: 'Token invalido o expirado' });
 	}
 }
 
