@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
 			}
 		);
 
-		res.status(201).json({ message: `Se ha creado con exito el usuario "${username}"` });
+		res.status(201).json({ message: `Se ha creado con exito el usuario ${username}` });
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({ message: 'Algo salio mal, no se pudo crear el usuario' });
