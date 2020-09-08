@@ -12,7 +12,7 @@ async function validateProductId(req, res, next) {
 		console.log('product es ' + product[0]);
 
 		if (!product.length) {
-			res.status(404).json(`No se encontraron productos con el id = ${req.params.id}`);
+			res.status(404).json({ message: `No se encontraron productos con el id = ${req.params.id}` });
 		} else {
 			next();
 		}
@@ -32,7 +32,7 @@ async function validateOrderId(req, res, next) {
 		});
 
 		if (!order.length) {
-			res.status(404).json(`No se encontró un pedido con el id = ${req.params.id}`);
+			res.status(404).json({ message: `No se encontró un pedido con el id = ${req.params.id}` });
 		} else {
 			next();
 		}
@@ -55,9 +55,9 @@ async function validateProductStatus(req, res, next) {
 			});
 
 			if (!query.length) {
-				return res.status(404).json(`No se encontró el producto id = ${item.id}`);
+				return res.status(404).json({ message: `No se encontró el producto id = ${item.id}` });
 			} else if (query[0].is_disabled) {
-				return res.status(403).json(`El producto id = ${item.id} se encuentra desabilitado.`);
+				return res.status(403).json({ message: `El producto id = ${item.id} se encuentra desabilitado.` });
 			}
 		});
 
