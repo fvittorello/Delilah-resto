@@ -1,4 +1,5 @@
 # Delilah Resto
+![Delilah backend image](https://fvittorello.github.io/assets/md/delilah-back/mockup_delilah-backend.jpg)
 
 Trabajo #3 del curso de Desarrollo Web Full Stack de Acamica.
 
