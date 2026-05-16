@@ -6,14 +6,17 @@ function generateToken(info) {
 }
 
 async function validateToken(req, res, next) {
-	const token = req.headers.authorization.split(' ')[1];
+	const authHeader = req.headers.authorization;
+	if (!authHeader) return res.status(401).json({ message: 'Token requerido.' });
+
+	const token = authHeader.split(' ')[1];
 
 	try {
 		const validation = jwt.verify(token, process.env.TOKEN_SECRET);
 		req.token_info = validation.info;
 		next();
 	} catch (err) {
-		res.status(401).json({ message: 'Token invalido o expirado' });
+		res.status(401).json({ message: 'Token invalido o expirado.' });
 	}
 }
 

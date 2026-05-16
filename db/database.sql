@@ -11,7 +11,7 @@ CREATE TABLE users(
     fullname VARCHAR(50) NOT NULL,
     address VARCHAR(250) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     is_admin BOOLEAN NOT NULL DEFAULT false,
     is_disabled BOOLEAN NOT NULL DEFAULT false,
@@ -72,11 +72,11 @@ CREATE TABLE payment_method(
 );
 
 INSERT INTO users (username, fullname, address, email, password, phone, is_admin) VALUES
-('fervitto', 'Fernando Vittorello', 'Calle Falsa 123', 'fvittorello@gmail.com', 'admin', '1555555555', true),
-('test', 'test testing', 'Av Luro 1233', 'test@test.com', 'test', '1555555554', false),
-('fmercuri', 'Freddy Mercuri', '1 Logan PlKensington, London', 'fmercuri@queen.com', 'eeeooo', '+44 7712345678', false),
-('jsmith', 'John Smith', 'TARDIS ST, 4242, Space 453m Gallifrey', 'jsmith@queen.com', 'oooeee', '+44 77213452378', false),
-('b-may', 'Brian May', '8236 Bohemian Street, Paddington, London', 'brianmay@queen.com', 'safestpass123', '+44 773219987678', false)
+('fervitto', 'Fernando Vittorello', 'Calle Falsa 123', 'fvittorello@gmail.com', '$2b$10$Q0cfa28wB59H/zEmDEpW9ezCny8n2z0eLNaP9k.Cd9mxZ7YosQ4n2', '1555555555', true),
+('test', 'test testing', 'Av Luro 1233', 'test@test.com', '$2b$10$2TvS2vwIVugCtXxXTvhjcO8.ylTxtGUwbb2Jlq/HtsioeJsqwODce', '1555555554', false),
+('fmercuri', 'Freddy Mercuri', '1 Logan PlKensington, London', 'fmercuri@queen.com', '$2b$10$522DhwqhFgJDVGjKsNNv7uKY4ppVcxRIEAcMwSWqnHqvlWsRoMJEW', '+44 7712345678', false),
+('jsmith', 'John Smith', 'TARDIS ST, 4242, Space 453m Gallifrey', 'jsmith@queen.com', '$2b$10$ta5ebYWFz4eNGygvD32kRuSO3Qh59LW7d17zSTRyp1xHCNFhO65A.', '+44 77213452378', false),
+('b-may', 'Brian May', '8236 Bohemian Street, Paddington, London', 'brianmay@queen.com', '$2b$10$p3hdecHNOK2r4.mFd06BkuCoB6wONBH5ne.eiUvFuYJOpw5Uz0BFC', '+44 773219987678', false)
 ;
 
 INSERT INTO products (image_url, title, price, prod_description) VALUES
