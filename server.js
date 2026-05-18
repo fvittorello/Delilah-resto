@@ -7,7 +7,12 @@ const apiVersion = 'v1';
 dotenv.config();
 app.set('port', process.env.PORT || 3000);
 
-app.use(cors());
+app.use(cors({
+	origin: process.env.CORS_ORIGIN || '*',
+	allowedHeaders: ['Content-Type', 'Authorization'],
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+}));
+app.options('*', cors());
 app.use(express.json());
 
 app.listen(app.get('port'), () => {

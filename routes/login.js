@@ -31,8 +31,15 @@ router.post('/', async (req, res) => {
 			return res.status(401).json({ message: 'El usuario o contraseña ingresados no son correctos.' });
 		}
 
-		const token_data = generateToken({ user_id: user.user_id, is_admin: user.is_admin, is_disabled: user.is_disabled });
-		res.status(200).json({ token_data });
+		const token = generateToken({ user_id: user.user_id, is_admin: user.is_admin, is_disabled: user.is_disabled });
+		res.status(200).json({
+			token_data: {
+				token,
+				user_id: user.user_id,
+				is_admin: user.is_admin,
+				is_disabled: user.is_disabled,
+			},
+		});
 	} catch (err) {
 		res.status(500).json({ message: 'Algo salio mal y no se pudo finalizar el login.' });
 	}
